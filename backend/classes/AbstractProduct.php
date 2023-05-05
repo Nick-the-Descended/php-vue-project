@@ -4,22 +4,9 @@ namespace backend\classes;
 
 abstract class AbstractProduct implements ProductInterface
 {
-    private int $id;
     private string $sku;
     private string $name;
     private float $price;
-
-
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    public function setId(int $id): AbstractProduct
-    {
-        $this->id = $id;
-        return $this;
-    }
 
 
     public function getSku(): string

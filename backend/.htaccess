@@ -1,0 +1,4 @@
+Header set MyCustomHeader "This file is being used"
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ index.php [QSA,L]

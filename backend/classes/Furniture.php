@@ -16,4 +16,12 @@ class Furniture extends AbstractProduct
         $this->dimensions = $dimensions;
         return $this;
     }
+    public function serialize(): array{
+        return [
+            "sku" => $this->getSku(),
+            "name" => $this->getName(),
+            "price" => $this->getPrice(),
+            "dimensions" => $this->getDimensions()
+        ];
+    }
 }

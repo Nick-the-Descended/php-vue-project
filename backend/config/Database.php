@@ -22,4 +22,9 @@ class Database {
     {
         return $this->connection->query($query);
     }
+
+    public function escape_string(mixed $sku): string
+    {
+        return $this->connection->escape_string($sku);
+    }
 }

@@ -22,4 +22,12 @@ class DVD extends AbstractProduct
         $this->size = $size;
         return $this;
     }
+    public function serialize(): array{
+        return [
+            "sku" => $this->getSku(),
+            "name" => $this->getName(),
+            "price" => $this->getPrice(),
+            "size" => $this->getSize()
+        ];
+    }
 }

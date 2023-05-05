@@ -23,4 +23,12 @@ class Book extends AbstractProduct
         return $this;
     }
 
+    public function serialize(): array{
+        return [
+            "sku" => $this->getSku(),
+            "name" => $this->getName(),
+            "price" => $this->getPrice(),
+            "weight" => $this->getWeight()
+        ];
+    }
 }

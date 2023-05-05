@@ -3,8 +3,7 @@
 namespace backend\classes;
 
 use backend\config\Database;
-use mysqli;
-use PDOStatement;
+use mysqli_result;
 
 class ProductService
 {
@@ -23,9 +22,13 @@ class ProductService
 
     public function getAllProducts(): array
     {
-        $query = "SELECT * FROM products ORDER BY id";
+        $query = "SELECT * FROM products ORDER BY createdOn";
         $result = $this->database->execute($query);
         $products = [];
+
+        if (!$result) {
+            return [];
+        }
 
         while ($row = $result->fetch_assoc()) {
             $product = $this->createProductFromRow($row);
@@ -51,6 +54,10 @@ class ProductService
 //    {
 //        return $height && $width && $length && $height > 0 && $width > 0 && $length > 0;
 //    }
+    public function isValidSku(string $sku): bool
+    {
+        return !$this->database->execute("SELECT * from products where sku = '$sku'")->fetch_row();
+    }
 
     private function createProductFromRow($row): ?ProductInterface
     {
@@ -62,62 +69,42 @@ class ProductService
         };
     }
 
-    public function saveProduct(ProductInterface $product): bool
+    public function deleteProducts(array $skus): int
     {
-        $sku = $product->getSku();
-        $name = $product->getName();
-        $price = $product->getPrice();
-        $attributes = $product->getAttributes();
+        $escapedSkus = array_map(function ($sku) {
+            return "'" . $this->database->escape_string($sku) . "'";
+        }, $skus);
+
+        $skuList = implode(',', $escapedSkus);
+
+        $query = "DELETE FROM products WHERE sku IN ({$skuList})";
+        return $this->database->execute($query);
+    }
 
 
-        if ($product instanceof DVD) {
-            $productType = 'DVD';
-            $size = $attributes['Size'];
-        } elseif ($product instanceof Book) {
-            $productType = 'Book';
-            $weight = $attributes['Weight'];
-        } elseif ($product instanceof Furniture) {
-            $productType = 'Furniture';
-            $dimensions = explode("x", $attributes['Dimensions']);
-            $height = $dimensions[0];
-            $width = $dimensions[1];
-            $length = $dimensions[2];
+    public function createProduct(array $post): mysqli_result|bool
+    {
+        $sku = $post['sku'];
+        $name = $post['name'];
+        $price = $post['price'];
+        $productType = $post['productType'];
+        $attribute = $post['attribute'];
+
+        if (!$this->isValidSku($sku)) {
+            echo "invalid SKU\n";
+            return false;
         }
 
-        $query = "INSERT INTO products (sku, name, price, product_type, size, weight, height, width, length)
-          VALUES (:sku, :name, :price, :productType, :size, :weight, :height, :width, :length)";
-        $stmt = $this->connection->prepare($query);
-        $stmt->execute([
-            'sku' => $sku,
-            'name' => $name,
-            'price' => $price,
-            'productType' => $productType,
-            'size' => $size,
-            'weight' => $weight,
-            'height' => $height,
-            'width' => $width,
-            'length' => $length,
-        ]);
+        $query = "INSERT INTO products
+                    (`sku`, `name`, `price`, `product_type`, `attribute`) 
+                    VALUES ('$sku', '$name', $price, '$productType', '$attribute')";
 
-        return $stmt->rowCount();
-    }
-
-    public function deleteProducts($productIds): int
-    {
-//        mysqli_query($db, "INSERT INTO products (products.name, products.price) VALUES ('$name', '$price')");
-        $query = "DELETE FROM products WHERE id IN (" . implode(',', $productIds) . ")";
-        return $this->connection->query($query);
-    }
-
-    public function createProduct(array $post)
-    {
-
+        return $this->database->execute($query);
     }
 
     private function addDefaultParameters(ProductInterface $product, $row)
     {
         return $product
-            ->setId($row['id'])
             ->setSku($row['sku'])
             ->setName($row['name'])
             ->setPrice($row['price']);
@@ -126,7 +113,7 @@ class ProductService
     private function createBook($row): Book
     {
         $product = new Book();
-        $product->setWeight($row['weight']);
+        $product->setWeight(floatval($row['attribute']));
 
         return $this->addDefaultParameters($product, $row);
     }
@@ -134,7 +121,7 @@ class ProductService
     private function createDVD($row): DVD
     {
         $product = new DVD();
-        $product->setSize($row['size']);
+        $product->setSize(floatval($row['attribute']));
 
         return $this->addDefaultParameters($product, $row);
     }
@@ -142,8 +129,10 @@ class ProductService
     private function createFurniture($row): Furniture
     {
         $product = new Furniture();
-        $product->setDimensions($row['dimensions']);
+        $product->setDimensions($row['attribute']);
 
         return $this->addDefaultParameters($product, $row);
     }
+
+
 }
