@@ -1,30 +1,26 @@
 <?php
 
+namespace backend\classes;
+
+use InvalidArgumentException;
+
 class Book extends AbstractProduct
 {
     private float $weight;
 
-    /**
-     * @return float
-     */
     public function getWeight(): float
     {
         return $this->weight;
     }
 
-    /**
-     * @param float $weight
-     * @return Book
-     */
     public function setWeight(float $weight): Book
     {
+        if ($weight < 0) {
+            throw new InvalidArgumentException('DVD size cannot be negative.');
+        }
+
         $this->weight = $weight;
         return $this;
-    }
-
-    public function getAttributes(): array
-    {
-        return ['weight' => $this->weight];
     }
 
 }
