@@ -86,7 +86,7 @@ function goBack() {
 }
 
 async function saveProduct() {
-    const url = "http://php-vue-project.000webhostapp.com/products/create";
+    const url = "https://php-vue-project.000webhostapp.com/products/create";
     // const url = `${API_BASE_URL}/products/create`;
     let requestBody = {};
 
