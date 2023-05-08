@@ -29,10 +29,10 @@
 <script setup>
 import {ref} from 'vue';
 import {useRouter} from 'vue-router';
-import {API_BASE_URL} from "@/config";
+// import {API_BASE_URL} from "@/config";
 
-let burl = "https://php-vue-project.000webhostapp.com"
-let url = `${burl}/products/getAll`;
+
+const url = "https://php-vue-project.000webhostapp.com/products/getAll";
 // let url = `${API_BASE_URL}/products/getAll`;
 
 const products = ref([]);

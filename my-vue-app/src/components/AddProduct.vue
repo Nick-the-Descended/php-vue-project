@@ -61,7 +61,7 @@
 <script setup>
 import {ref} from "vue";
 import {useRouter} from "vue-router";
-import {API_BASE_URL} from '@/config';
+// import {API_BASE_URL} from '@/config';
 
 const form = ref(data());
 
@@ -86,8 +86,7 @@ function goBack() {
 }
 
 async function saveProduct() {
-    let burl = "https://php-vue-project.000webhostapp.com"
-    let url = `${burl}/products/getAll`;
+    const url = "https://php-vue-project.000webhostapp.com/products/create";
     // const url = `${API_BASE_URL}/products/create`;
     let requestBody = {};
 
