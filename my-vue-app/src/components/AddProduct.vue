@@ -61,6 +61,7 @@
 <script setup>
 import {ref} from "vue";
 import {useRouter} from "vue-router";
+import { API_BASE_URL } from '@/config';
 
 const form = ref(data());
 
@@ -84,8 +85,7 @@ function goBack() {
 }
 
 async function saveProduct() {
-    const BASE_URL = "http://localhost:8000";
-    const url = `${BASE_URL}/products/create`;
+    const url = `${API_BASE_URL}/products/create`;
     let requestBody = {};
 
     switch (form.value.type) {

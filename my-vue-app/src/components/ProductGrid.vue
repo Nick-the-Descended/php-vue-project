@@ -29,9 +29,9 @@
 <script setup>
 import {ref} from 'vue';
 import {useRouter} from 'vue-router';
+import {API_BASE_URL} from "@/config";
 
-const BASE_URL = 'http://localhost:8000';
-let url = `${BASE_URL}/products/getAll`;
+let url = `${API_BASE_URL}/products/getAll`;
 
 const products = ref([]);
 
