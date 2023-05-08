@@ -16,9 +16,9 @@
                 <input type="checkbox" class="delete-checkbox"/>
                 <div class="product-info">
                     <p>{{ product.sku }}</p>
-                    <p>{{ product.productType }}</p>
+                    <p>{{ product.name }}</p>
                     <p>{{ product.price }}</p>
-                    <p><strong>{{product.attributeName}}:</strong> {{ product.attribute }}</p>
+                    <p>{{ product.attribute }}</p>
                 </div>
             </div>
         </div>
@@ -27,42 +27,35 @@
 </template>
 
 <script setup>
-
 import {ref} from 'vue';
-import { useRouter } from 'vue-router';
+import {useRouter} from 'vue-router';
 
-const products = ref([
-    // Add your product objects here, e.g.:
-    { sku: 'SKU123', productType: 'Book', price: 19.99, attribute: '0.5 kg' , attributeName: "Weight"},
-    { sku: 'SKU123', productType: 'Book', price: 19.99, attribute: '0.5 kg' , attributeName: "Weight"},
-    { sku: 'SKU123', productType: 'Book', price: 19.99, attribute: '0.5 kg' , attributeName: "Weight"},
-    { sku: 'SKU123', productType: 'Book', price: 19.99, attribute: '0.5 kg' , attributeName: "Weight"},
-    { sku: 'SKU123', productType: 'Book', price: 19.99, attribute: '0.5 kg' , attributeName: "Weight"},
-    { sku: 'SKU123', productType: 'Book', price: 19.99, attribute: '0.5 kg' , attributeName: "Weight"},
-    { sku: 'SKU123', productType: 'Book', price: 19.99, attribute: '0.5 kg' , attributeName: "Weight"},
-    { sku: 'SKU123', productType: 'Book', price: 19.99, attribute: '0.5 kg' , attributeName: "Weight"},
-    { sku: 'SKU123', productType: 'Book', price: 19.99, attribute: '0.5 kg' , attributeName: "Weight"},
-    { sku: 'SKU123', productType: 'Book', price: 19.99, attribute: '0.5 kg' , attributeName: "Weight"},
-    { sku: 'SKU123', productType: 'Book', price: 19.99, attribute: '0.5 kg' , attributeName: "Weight"},
-    { sku: 'SKU123', productType: 'Book', price: 19.99, attribute: '0.5 kg' , attributeName: "Weight"},
-    { sku: 'SKU123', productType: 'Book', price: 19.99, attribute: '0.5 kg' , attributeName: "Weight"},
-    { sku: 'SKU123', productType: 'Book', price: 19.99, attribute: '0.5 kg' , attributeName: "Weight"},
-    { sku: 'SKU123', productType: 'Book', price: 19.99, attribute: '0.5 kg' , attributeName: "Weight"},
-    { sku: 'SKU123', productType: 'Book', price: 19.99, attribute: '0.5 kg' , attributeName: "Weight"},
-    { sku: 'SKU123', productType: 'Book', price: 19.99, attribute: '0.5 kg' , attributeName: "Weight"},
-    { sku: 'SKU123', productType: 'Book', price: 19.99, attribute: '0.5 kg' , attributeName: "Weight"},
-    { sku: 'SKU123', productType: 'Book', price: 19.99, attribute: '0.5 kg' , attributeName: "Weight"},
-    { sku: 'SKU123', productType: 'Book', price: 19.99, attribute: '0.5 kg' , attributeName: "Weight"},
-    { sku: 'SKU123', productType: 'Book', price: 19.99, attribute: '0.5 kg' , attributeName: "Weight"},
-    { sku: 'SKU123', productType: 'Book', price: 19.99, attribute: '0.5 kg' , attributeName: "Weight"},
-]);
+const BASE_URL = 'http://localhost:8000';
+let url = `${BASE_URL}/products/getAll`;
+
+const products = ref([]);
+
+fetch(url, {
+    method: 'GET',
+})
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            console.error('Failed to get products; ', response.status);
+            throw new Error('Failed to get products');
+        }
+    })
+    .then(data => {
+        products.value = data;
+    })
+    .catch(error => console.error('Error:', error));
 
 const router = useRouter();
 
 function addProductListener() {
     router.push('/addProduct');
 }
-
 </script>
 
 <style scoped>
@@ -75,7 +68,7 @@ function addProductListener() {
     justify-content: space-between;
 }
 
-.grid{
+.grid {
     height: 100%;
     overflow: auto;
     scroll-behavior: smooth;
@@ -86,11 +79,12 @@ function addProductListener() {
     grid-gap: 20px;
 }
 
-.product-card{
+.product-card {
     display: grid;
     grid-template-rows: auto .8fr;
     border: 4px solid #282828;
     padding: 20px;
+    height: 12vw;
     background: #2f2e2e;
     border-radius: 10px;
 }
@@ -104,6 +98,7 @@ function addProductListener() {
     align-content: space-evenly;
     justify-items: center;
 }
+
 /*
 .product-info p {
     overflow: hidden;
@@ -159,15 +154,6 @@ function addProductListener() {
     margin-top: auto;
 }
 
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-    width: 100%;
-    border-bottom: 1px solid #ccc;
-}
-
 .product-list-title {
     margin: 0;
 }
@@ -176,28 +162,5 @@ function addProductListener() {
     display: flex;
 }
 
-button {
-    margin: 0 5px;
-    padding: 10px 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: white;
-    color: #333;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-}
 
-button:hover {
-    background-color: #333;
-    color: white;
-    border-color: #333;
-}
-
-.footer {
-    border-top: 1px solid #ccc;
-    margin-top: 2rem;
-    text-align: center;
-    width: 100%;
-}
 </style>

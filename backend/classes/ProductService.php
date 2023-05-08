@@ -87,7 +87,7 @@ class ProductService
         $sku = $post['sku'];
         $name = $post['name'];
         $price = $post['price'];
-        $productType = $post['productType'];
+        $productType = $post['type'];
         $attribute = $post['attribute'];
 
         if (!$this->isValidSku($sku)) {
