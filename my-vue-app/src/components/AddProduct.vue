@@ -86,7 +86,7 @@ function goBack() {
 }
 
 async function saveProduct() {
-    const url = "https://php-vue-project.000webhostapp.com/products/create";
+    const url = "http://php-vue-project.000webhostapp.com/products/create";
     // const url = `${API_BASE_URL}/products/create`;
     let requestBody = {};
 
@@ -106,7 +106,7 @@ async function saveProduct() {
     requestBody.name = form.value.name;
     requestBody.price = form.value.price;
     requestBody.type = form.value.type;
-    console.log("Request body:", JSON.stringify(requestBody));
+    // console.log("Request body:", JSON.stringify(requestBody));
     const response = await fetch(url, {
         method: "POST",
         headers: {

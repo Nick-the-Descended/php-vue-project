@@ -4,7 +4,7 @@
             <h1 class="product-list-title">Product List</h1>
             <div class="buttons">
                 <button id="add-product-btn" @click="addProductListener">ADD</button>
-                <button id="delete-product-btn">MASS DELETE</button>
+                <button id="delete-product-btn" @click="massDelete">MASS DELETE</button>
             </div>
         </div>
         <div class="grid">
@@ -37,26 +37,53 @@ const url = "https://php-vue-project.000webhostapp.com/products/getAll";
 
 const products = ref([]);
 
-fetch(url, {
-    method: 'GET',
-})
-    .then(response => {
-        if (response.ok) {
-            return response.json();
-        } else {
-            console.error('Failed to get products; ', response.status);
-            throw new Error('Failed to get products');
-        }
+getProducts();
+
+function getProducts(){
+    fetch(url, {
+        method: 'GET',
     })
-    .then(data => {
-        products.value = data;
-    })
-    .catch(error => console.error('Error:', error));
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                console.error('Failed to get products; ', response.status);
+                throw new Error('Failed to get products');
+            }
+        })
+        .then(data => {
+            products.value = data;
+        })
+        .catch(error => console.error('Error:', error));
+}
 
 const router = useRouter();
 
 function addProductListener() {
     router.push('/addProduct');
+}
+function massDelete() {
+    let skus = [];
+    let checkboxes = document.getElementsByClassName('delete-checkbox');
+
+    for (let i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i].checked) {
+            let sku = checkboxes[i].closest('.product-info').querySelector('p:first-child').textContent;
+            skus.push(sku);
+        }
+    }
+
+    const encodedSkus = encodeURIComponent(JSON.stringify(skus));
+    const url = `https://php-vue-project.000webhostapp.com/products/delete?skus=${encodedSkus}`
+    fetch(url, {
+        method: 'DELETE',
+    }).then(response => {
+        if (response.ok) {
+            getProducts();
+        }else{
+            console.log("error",response.text());
+        }
+    })
 }
 </script>
 

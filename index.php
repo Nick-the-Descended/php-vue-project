@@ -11,13 +11,13 @@ require_once './backend/classes/DVD.php';
 require_once './backend/classes/Book.php';
 require_once './backend/classes/Furniture.php';
 
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+header("Access-Control-Allow-Headers: *");
 $productService = new ProductService();
 //header("Access-Control-Allow-Origin: *");
 //header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 //header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
-header("Access-Control-Allow-Headers: *");
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
@@ -94,4 +94,4 @@ function custom_str_ends_with(string $haystack, string $needle): bool
 
 // TODO delete
 // const encodedSkus = encodeURIComponent(JSON.stringify(skus));
-// const url = `http://localhost/php-vue-project/backend/api/index.php/deleteProducts?skus=${encodedSkus}`;
+// const url = `https://php-vue-project.000webhostapp.com/products/delete?skus=${encodedSkus}`
