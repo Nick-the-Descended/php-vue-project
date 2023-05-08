@@ -29,10 +29,10 @@
 <script setup>
 import {ref} from 'vue';
 import {useRouter} from 'vue-router';
-// import {API_BASE_URL} from "@/config";
+import {API_BASE_URL} from "@/config";
 
-
-const url = "https://php-vue-project.000webhostapp.com/products/getAll";
+const BASE_URL = API_BASE_URL || "http://localhost:8000"
+const url = `${BASE_URL}/products/getAll`;
 // let url = `${API_BASE_URL}/products/getAll`;
 
 const products = ref([]);
@@ -68,17 +68,21 @@ function massDelete() {
 
     for (let i = 0; i < checkboxes.length; i++) {
         if (checkboxes[i].checked) {
-            let sku = checkboxes[i].closest('.product-info').querySelector('p:first-child').textContent;
+            let sku = checkboxes[i].parentElement.querySelector('.product-info p').textContent;
             skus.push(sku);
         }
     }
 
     const encodedSkus = encodeURIComponent(JSON.stringify(skus));
-    const url = `https://php-vue-project.000webhostapp.com/products/delete?skus=${encodedSkus}`
+    const url = `${BASE_URL}/products/delete?skus=${encodedSkus}`
     fetch(url, {
         method: 'DELETE',
     }).then(response => {
         if (response.ok) {
+            let boxes = document.getElementsByClassName("delete-checkbox")
+            for (let i = 0; i < boxes.length; i++) {
+                boxes[i].checked = false;
+            }
             getProducts();
         }else{
             console.log("error",response.text());

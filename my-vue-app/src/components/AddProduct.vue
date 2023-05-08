@@ -3,15 +3,15 @@
         <div class="header">
             <h1 class="product-list-title">Add Product</h1>
             <div class="buttons">
-                <button id="add-product-btn" @click="saveProduct">Save</button>
-                <button id="delete-product-btn" @click="goBack">Cancel</button>
+                <button id="add-product-btn" @click="saveProduct" :disabled="isSaveDisabled">Save</button>
+                <button id="cancel-btn" @click="goBack">Cancel</button>
             </div>
         </div>
         <div class="wrapper" id="product_form">
             <div class="input-container">
                 <div class="input-fields">
                     <label for="sku">SKU</label>
-                    <input id="sku" type="text" v-model="form.sku" placeholder="SKU"/>
+                    <input id="sku" type="text" v-model="form.sku" :class="{ error: !form.validSku }" placeholder="SKU" />
 
                     <label for="name">Name</label>
                     <input id="name" type="text" v-model="form.name" placeholder="Name"/>
@@ -59,12 +59,13 @@
 
 
 <script setup>
-import {ref} from "vue";
+import {ref, computed, watch} from "vue";
 import {useRouter} from "vue-router";
-// import {API_BASE_URL} from '@/config';
+import {API_BASE_URL} from '@/config';
+
+const BASE_URL = API_BASE_URL || "http://localhost:8000"
 
 const form = ref(data());
-
 function data() {
     return {
         sku: "",
@@ -86,8 +87,7 @@ function goBack() {
 }
 
 async function saveProduct() {
-    const url = "https://php-vue-project.000webhostapp.com/products/create";
-    // const url = `${API_BASE_URL}/products/create`;
+    const url = `${BASE_URL}/products/create`;
     let requestBody = {};
 
     switch (form.value.type) {
@@ -121,6 +121,39 @@ async function saveProduct() {
         form.value = data();
     }
 }
+function validateForm() {
+    form.value.validSku = !!form.value.sku.trim();
+    form.value.validName = !!form.value.name.trim();
+    form.value.validPrice = form.value.price > 0;
+
+    switch (form.value.type) {
+        case "DVD":
+            form.value.validAttribute = form.value.size > 0;
+            break;
+        case "Book":
+            form.value.validAttribute = form.value.weight > 0;
+            break;
+        case "Furniture":
+            form.value.validAttribute = form.value.height > 0 && form.value.width > 0 && form.value.length > 0;
+            break;
+    }
+}
+
+const isSaveDisabled = computed(() => {
+    // Check if any of the required fields are empty or invalid
+    return !form.value.validSku || !form.value.validName || !form.value.validPrice || !form.value.validAttribute;
+});
+
+const isSaveDisabledRef = ref(false);
+watch(isSaveDisabled, (newValue) => {
+    isSaveDisabledRef.value = newValue;
+});
+
+watch(form, () => {
+    validateForm();
+}, { deep: true });
+
+validateForm();
 </script>
 
 <style scoped>
