@@ -31,7 +31,9 @@ import {ref} from 'vue';
 import {useRouter} from 'vue-router';
 import {API_BASE_URL} from "@/config";
 
-let url = `${API_BASE_URL}/products/getAll`;
+let burl = "https://php-vue-project.000webhostapp.com"
+let url = `${burl}/products/getAll`;
+// let url = `${API_BASE_URL}/products/getAll`;
 
 const products = ref([]);
 
