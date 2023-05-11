@@ -1,15 +1,13 @@
 <?php
 
-namespace backend\config;
+namespace backend\classes\config;
 
-use mysqli;
-use mysqli_result;
 
 class Database {
-    private mysqli $connection;
+    private \MySQLi $connection;
 
     public function __construct() {
-        $this->connection = new mysqli(HOST, USERNAME, PASSWORD, DATABASE);
+        $this->connection = new \MySQLi(HOST, USERNAME, PASSWORD, DATABASE);
 
         if ($this->connection->connect_error) {
             die("Connection failed: " . $this->connection->connect_error);
@@ -18,7 +16,7 @@ class Database {
         $this->connection->set_charset("utf8mb4");
     }
 
-    public function execute(string $query): mysqli_result|bool
+    public function execute(string $query): \mysqli_result|bool
     {
         return $this->connection->query($query);
     }

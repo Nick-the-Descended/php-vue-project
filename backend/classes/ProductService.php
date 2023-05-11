@@ -2,7 +2,7 @@
 
 namespace backend\classes;
 
-use backend\config\Database;
+use backend\classes\config\Database;
 use mysqli_result;
 
 class ProductService
