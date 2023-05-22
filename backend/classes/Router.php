@@ -20,8 +20,7 @@ class Router
         $response = new \GuzzleHttp\Psr7\Response();
         $path = strtolower($request->getUri()->getPath());
         $method = $request->getMethod();
-
-        // Add your routes here
+        
         if ($path === '/products/getall' && $method === 'GET') {
             return $this->getAllProducts($request, $response);
         } elseif ($path === '/products/create' && $method === 'POST') {
@@ -33,7 +32,6 @@ class Router
         }
     }
 
-    // Implement your route methods here
     private function getAllProducts(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         $products = $this->productService->getAllProducts();
